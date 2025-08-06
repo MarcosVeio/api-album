@@ -10,6 +10,7 @@ import tech.marcosmartinelli.springsecurity.modules.image.Image;
 import tech.marcosmartinelli.springsecurity.modules.users.User;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -45,5 +46,4 @@ public class Album {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
-
 }

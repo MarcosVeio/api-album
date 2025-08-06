@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import tech.marcosmartinelli.springsecurity.modules.users.dtos.UserRequestDTO;
 import tech.marcosmartinelli.springsecurity.modules.users.dtos.UserResponseDTO;
-import tech.marcosmartinelli.springsecurity.controller.dto.UserWithRoleResponseDTO;
 import tech.marcosmartinelli.springsecurity.modules.role.Role;
 import tech.marcosmartinelli.springsecurity.modules.role.enums.RolesEnum;
 import tech.marcosmartinelli.springsecurity.modules.role.RoleRepository;
