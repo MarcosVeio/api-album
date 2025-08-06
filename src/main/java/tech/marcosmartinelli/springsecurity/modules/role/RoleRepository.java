@@ -1,8 +1,7 @@
-package tech.marcosmartinelli.springsecurity.repositories;
+package tech.marcosmartinelli.springsecurity.modules.role;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import tech.marcosmartinelli.springsecurity.domain.Role.Role;
 
 
 @Repository

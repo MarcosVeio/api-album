@@ -1,4 +1,4 @@
-package tech.marcosmartinelli.springsecurity.domain.Album;
+package tech.marcosmartinelli.springsecurity.modules.album;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import tech.marcosmartinelli.springsecurity.domain.Image.Image;
-import tech.marcosmartinelli.springsecurity.domain.User.User;
+import tech.marcosmartinelli.springsecurity.modules.image.Image;
+import tech.marcosmartinelli.springsecurity.modules.users.User;
 
 import java.time.LocalDateTime;
 import java.util.Set;

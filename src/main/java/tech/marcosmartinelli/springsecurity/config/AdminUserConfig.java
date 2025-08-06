@@ -4,10 +4,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import tech.marcosmartinelli.springsecurity.domain.Role.enums.RolesEnum;
-import tech.marcosmartinelli.springsecurity.domain.User.User;
-import tech.marcosmartinelli.springsecurity.repositories.RoleRepository;
-import tech.marcosmartinelli.springsecurity.repositories.UserRepository;
+import tech.marcosmartinelli.springsecurity.modules.role.enums.RolesEnum;
+import tech.marcosmartinelli.springsecurity.modules.users.User;
+import tech.marcosmartinelli.springsecurity.modules.role.RoleRepository;
+import tech.marcosmartinelli.springsecurity.modules.users.UserRepository;
 
 import java.util.Set;
 

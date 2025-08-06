@@ -1,4 +1,4 @@
-package tech.marcosmartinelli.springsecurity.domain.Role.enums;
+package tech.marcosmartinelli.springsecurity.modules.role.enums;
 
 public enum RolesEnum {
     BASIC(1L),

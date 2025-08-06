@@ -1,4 +1,4 @@
-package tech.marcosmartinelli.springsecurity.domain.Role;
+package tech.marcosmartinelli.springsecurity.modules.role;
 
 
 import jakarta.persistence.*;

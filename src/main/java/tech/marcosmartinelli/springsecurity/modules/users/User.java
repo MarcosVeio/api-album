@@ -1,4 +1,4 @@
-package tech.marcosmartinelli.springsecurity.domain.User;
+package tech.marcosmartinelli.springsecurity.modules.users;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import tech.marcosmartinelli.springsecurity.controller.dto.LoginRequestDTO;
-import tech.marcosmartinelli.springsecurity.domain.Role.Role;
+import tech.marcosmartinelli.springsecurity.modules.auth.dtos.LoginRequestDTO;
+import tech.marcosmartinelli.springsecurity.modules.role.Role;
 
 import java.time.LocalDateTime;
 import java.util.Set;
