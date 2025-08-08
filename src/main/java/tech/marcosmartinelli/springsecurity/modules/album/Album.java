@@ -1,9 +1,7 @@
 package tech.marcosmartinelli.springsecurity.modules.album;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import tech.marcosmartinelli.springsecurity.modules.image.Image;
@@ -16,9 +14,12 @@ import java.util.UUID;
 
 @Table
 @Entity(name= "tb_album")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = {"images", "user", "coverImage"})
+@ToString(exclude = {"images", "user", "coverImage"})
 public class Album {
 
     @Id

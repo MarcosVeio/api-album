@@ -1,9 +1,7 @@
 package tech.marcosmartinelli.springsecurity.modules.image;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import tech.marcosmartinelli.springsecurity.modules.album.Album;
@@ -13,9 +11,12 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tb_image")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = "album")
+@ToString(exclude = "album")
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -4,13 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tech.marcosmartinelli.springsecurity.modules.album.dtos.AlbumRequestDTO;
 import tech.marcosmartinelli.springsecurity.modules.album.dtos.AlbumResponseDTO;
+import tech.marcosmartinelli.springsecurity.modules.album.dtos.AlbumWithCoverDTO;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -33,5 +37,23 @@ public class AlbumController {
         AlbumResponseDTO newAlbum = this.albumService.createAlbum(newRequestDTO, token);
 
         return ResponseEntity.ok(newAlbum);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AlbumWithCoverDTO>> getAlbumsByUser(
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        List<AlbumWithCoverDTO> getAlbums = this.albumService.getAlbumsByUser(jwt);
+
+        return ResponseEntity.ok(getAlbums);
+    }
+
+    @DeleteMapping("/{albumId}")
+    public ResponseEntity<Void> deleteAlbum(
+            @PathVariable("albumId") UUID albumId
+    ) {
+        this.albumService.deleteAlbum(albumId);
+
+        return ResponseEntity.noContent().build();
     }
 }
