@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import tech.marcosmartinelli.springsecurity.modules.album.dtos.AlbumRequestDTO;
 import tech.marcosmartinelli.springsecurity.modules.album.dtos.AlbumResponseDTO;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,8 +23,14 @@ public class AlbumController {
     @Transactional
     @PostMapping
     @PreAuthorize("hasAuthority('SCOPE_BASIC')")
-    public ResponseEntity<AlbumResponseDTO> newAlbum(@RequestBody AlbumRequestDTO albumRequestDTO) {
-        AlbumResponseDTO newAlbum = this.albumService.createAlbum(albumRequestDTO);
+    public ResponseEntity<AlbumResponseDTO> newAlbum(
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("userId") UUID userId,
+            @RequestParam("coverImage") MultipartFile coverImage
+            ) {
+        AlbumRequestDTO newRequestDTO = new AlbumRequestDTO(userId, title, description, coverImage);
+        AlbumResponseDTO newAlbum = this.albumService.createAlbum(newRequestDTO);
 
         return ResponseEntity.ok(newAlbum);
     }

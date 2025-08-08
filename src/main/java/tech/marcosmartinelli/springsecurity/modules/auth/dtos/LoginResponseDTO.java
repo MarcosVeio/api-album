@@ -1,4 +1,6 @@
 package tech.marcosmartinelli.springsecurity.modules.auth.dtos;
 
-public record LoginResponseDTO(String accessToken, Long expiresIn) {
+import java.util.UUID;
+
+public record LoginResponseDTO(String username, UUID userId, String accessToken, Long expiresIn) {
 }
