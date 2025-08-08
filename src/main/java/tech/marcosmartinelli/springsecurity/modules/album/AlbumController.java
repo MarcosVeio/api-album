@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,15 +23,14 @@ public class AlbumController {
 
     @Transactional
     @PostMapping
-    @PreAuthorize("hasAuthority('SCOPE_BASIC')")
     public ResponseEntity<AlbumResponseDTO> newAlbum(
             @RequestParam("title") String title,
             @RequestParam("description") String description,
-            @RequestParam("userId") UUID userId,
-            @RequestParam("coverImage") MultipartFile coverImage
+            @RequestParam("coverImage") MultipartFile coverImage,
+            JwtAuthenticationToken token
             ) {
-        AlbumRequestDTO newRequestDTO = new AlbumRequestDTO(userId, title, description, coverImage);
-        AlbumResponseDTO newAlbum = this.albumService.createAlbum(newRequestDTO);
+        AlbumRequestDTO newRequestDTO = new AlbumRequestDTO(title, description, coverImage);
+        AlbumResponseDTO newAlbum = this.albumService.createAlbum(newRequestDTO, token);
 
         return ResponseEntity.ok(newAlbum);
     }
