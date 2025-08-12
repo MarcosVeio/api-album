@@ -13,6 +13,7 @@ import tech.marcosmartinelli.springsecurity.modules.album.dtos.*;
 import tech.marcosmartinelli.springsecurity.modules.image.Image;
 import tech.marcosmartinelli.springsecurity.modules.image.ImageRepository;
 import tech.marcosmartinelli.springsecurity.modules.image.ImageService;
+import tech.marcosmartinelli.springsecurity.modules.role.dtos.RoleResponseDTO;
 import tech.marcosmartinelli.springsecurity.modules.users.User;
 import tech.marcosmartinelli.springsecurity.modules.users.UserRepository;
 
@@ -59,6 +60,12 @@ public class AlbumService {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));;
 
         List<Album> albums = this.albumRepository.findAllByUser(user);
+
+        if (user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) {
+            albums = this.albumRepository.findAll();
+        } else {
+            albums = this.albumRepository.findAllByUser(user);
+        }
 
         return albums.stream().map(album -> {
             ImageDTO coverImageDTO = null;

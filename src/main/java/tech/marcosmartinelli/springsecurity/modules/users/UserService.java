@@ -8,7 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import tech.marcosmartinelli.springsecurity.exception.ResourceNotFoundException;
+import tech.marcosmartinelli.springsecurity.modules.album.Album;
 import tech.marcosmartinelli.springsecurity.modules.users.dtos.UserRequestDTO;
 import tech.marcosmartinelli.springsecurity.modules.users.dtos.UserResponseDTO;
 import tech.marcosmartinelli.springsecurity.modules.role.Role;
@@ -18,6 +21,7 @@ import tech.marcosmartinelli.springsecurity.modules.role.RoleRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -51,5 +55,14 @@ public class UserService {
         Page<User> usersPage = userRepository.findUpcomingUsers(pageable);
 
         return usersPage.stream().toList();
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @Transactional
+    public void deleteUser(UUID userId) {
+        User userToDelete = this.userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));;
+
+        this.userRepository.delete(userToDelete);
     }
 }

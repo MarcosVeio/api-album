@@ -64,4 +64,13 @@ public class UserController {
 
         return ResponseEntity.ok(allUsers);
     }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<List<User>> getAllUsers(
+            @PathVariable("userId") UUID userId
+    ) {
+        this.userService.deleteUser(userId);
+
+        return ResponseEntity.noContent().build();
+    }
 }
