@@ -11,12 +11,15 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import tech.marcosmartinelli.springsecurity.modules.role.Role;
+import tech.marcosmartinelli.springsecurity.modules.role.dtos.RoleResponseDTO;
 import tech.marcosmartinelli.springsecurity.modules.users.dtos.UserProfileDTO;
 import tech.marcosmartinelli.springsecurity.modules.users.dtos.UserRequestDTO;
 import tech.marcosmartinelli.springsecurity.modules.users.dtos.UserResponseDTO;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,7 +45,14 @@ public class UserController {
         UUID userId = UUID.fromString(jwt.getSubject());
 
         return userRepository.findById(userId)
-                .map(user -> ResponseEntity.ok(new UserProfileDTO(user)))
+                .map(user -> ResponseEntity.ok(new UserProfileDTO(
+                        user.getUserId(),
+                        user.getUsername(),
+                        user.getRoles().stream()
+                                .map(role -> new RoleResponseDTO(role.getRoleId(), role.getName()))
+                                .collect(Collectors.toList())
+                        )
+                ))
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.UNPROCESSABLE_ENTITY, "User not found."));
     }
