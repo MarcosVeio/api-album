@@ -17,11 +17,14 @@ public class AlbumSecurityService {
     private final UserRepository userRepository;
 
     public boolean isOwner(Authentication authentication, UUID albumId) {
-        String username = authentication.getName();
+        String userIdAsString = authentication.getName();
+        UUID authenticatedUserId = UUID.fromString(userIdAsString);
 
         Album album = albumRepository.findById(albumId)
                 .orElseThrow(() -> new ResourceNotFoundException("Álbum não encontrado"));;
 
-        return album.getUser().getUsername().equals(username);
+        UUID ownerId = album.getUser().getUserId();
+
+        return authenticatedUserId.equals(ownerId);
     }
 }
