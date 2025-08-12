@@ -3,16 +3,22 @@ package tech.marcosmartinelli.springsecurity.modules.image;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import tech.marcosmartinelli.springsecurity.exception.ResourceNotFoundException;
 import tech.marcosmartinelli.springsecurity.modules.album.Album;
+import tech.marcosmartinelli.springsecurity.modules.album.AlbumRepository;
+import tech.marcosmartinelli.springsecurity.modules.image.dtos.ImagesByAlbumResponseDTO;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,6 +31,7 @@ public class ImageService {
 
     private final S3Client s3Client;
     private final ImageRepository imageRepository;
+    private final AlbumRepository albumRepository;
 
     public Image createImg(MultipartFile file, Album album) {
 
@@ -63,5 +70,65 @@ public class ImageService {
             log.error("erro ao subir arquivo: {}", e.getMessage());
             return "";
         }
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN') or @albumSecurityService.isOwner(authentication, #albumId)")
+    public void uploadMultipleFiles(List<MultipartFile> files, UUID albumId) {
+        Album albumFromDb = this.albumRepository.findById(albumId)
+                .orElseThrow(() -> new ResourceNotFoundException("Álbum não encontrado com o ID: " + albumId));
+
+        if (files.isEmpty()) {
+            System.err.println("Nenhum arquivo selecionado para upload.");
+        }
+
+        List<Image> uploadedFile = new ArrayList<Image>();
+        for (MultipartFile file : files) {
+            try {
+                Image newImage = this.createImg(file, albumFromDb);
+                uploadedFile.add(newImage);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("\"Erro ao enviar arquivo \" + file.getOriginalFilename() + \": \" + e.getMessage()");
+            }
+        }
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN') or @albumSecurityService.isOwner(authentication, #albumId)")
+    public List<ImagesByAlbumResponseDTO> findAllImagesByAlbumId(UUID albumId) {
+        Album albumFromDb = this.albumRepository.findById(albumId)
+                .orElseThrow(() -> new ResourceNotFoundException("Álbum não encontrado com o ID: " + albumId));
+
+        List<Image> imagesFromDb = this.imageRepository.findAllByAlbum(albumFromDb);
+
+        List<ImagesByAlbumResponseDTO> imagesByAlbumResponseDTOList = new ArrayList<ImagesByAlbumResponseDTO>();
+        for (Image image : imagesFromDb) {
+            try {
+                ImagesByAlbumResponseDTO newImage = new ImagesByAlbumResponseDTO(
+                        image.getImageId(),
+                        image.getImgUrl(),
+                        image.getFileName(),
+                        image.getFileType(),
+                        image.getFileSize()
+                );
+                imagesByAlbumResponseDTOList.add(newImage);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Erro ao buscar arquivo \" + image.getFileName() + \": \" + e.getMessage()");
+            }
+        }
+
+        return imagesByAlbumResponseDTOList;
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN') or @albumSecurityService.isOwner(authentication, #albumId)")
+    public void deleteById(UUID albumId, UUID imageId){
+        Image imageFromDb = this.imageRepository.findById(imageId)
+                .orElseThrow(() -> new ResourceNotFoundException("Imagem não encontrada com o ID: " + imageId));;
+
+        UUID imgAlbumId = imageFromDb.getAlbum().getAlbumId();
+
+        if(imgAlbumId.equals(imageId)){
+            throw new IllegalArgumentException("A imagem não pertence ao álbum especificado.");
+        }
+
+        this.imageRepository.deleteById(imageId);
     }
 }

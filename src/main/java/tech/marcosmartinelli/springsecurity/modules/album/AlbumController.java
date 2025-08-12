@@ -48,6 +48,15 @@ public class AlbumController {
         return ResponseEntity.ok(getAlbums);
     }
 
+    @GetMapping("/{albumId}")
+    public ResponseEntity<AlbumWithCoverDTO> getAlbumById(
+            @PathVariable("albumId") UUID id
+    ) {
+        AlbumWithCoverDTO getAlbums = this.albumService.getAlbumById(id);
+
+        return ResponseEntity.ok(getAlbums);
+    }
+
     @DeleteMapping("/{albumId}")
     public ResponseEntity<Void> deleteAlbum(
             @PathVariable("albumId") UUID albumId

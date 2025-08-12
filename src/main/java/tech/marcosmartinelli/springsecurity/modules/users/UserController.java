@@ -48,7 +48,6 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<List<User>> getAllUsers(@RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "10") int size) {
         List<User> allUsers = this.userService.getUpcomingUsers(page, size);

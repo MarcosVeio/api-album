@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -31,7 +32,7 @@ public class UserService {
         Optional<User> userFromDb = userRepository.findByUsername(userRequestDTO.username());
 
         if(userFromDb.isPresent()){
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new IllegalArgumentException("Esse username já existe");
         }
 
         User newUser = new User();
@@ -44,6 +45,7 @@ public class UserService {
         return new UserResponseDTO(newUser.getUsername(), basicRole.getName());
     }
 
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public List<User> getUpcomingUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> usersPage = userRepository.findUpcomingUsers(pageable);
