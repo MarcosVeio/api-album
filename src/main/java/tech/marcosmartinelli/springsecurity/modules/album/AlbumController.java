@@ -57,6 +57,19 @@ public class AlbumController {
         return ResponseEntity.ok(getAlbums);
     }
 
+    @PutMapping("/{albumId}")
+    public ResponseEntity<AlbumResponseDTO> updateAlbum(
+            @PathVariable("albumId") UUID albumId,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "coverImage", required = false) MultipartFile coverImage
+    ) {
+        AlbumRequestDTO requestDTO = new AlbumRequestDTO(title, description, coverImage);
+        AlbumResponseDTO updated = this.albumService.update(albumId, requestDTO);
+
+        return ResponseEntity.ok(updated);
+    }
+
     @DeleteMapping("/{albumId}")
     public ResponseEntity<Void> deleteAlbum(
             @PathVariable("albumId") UUID albumId
