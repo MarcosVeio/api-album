@@ -19,7 +19,6 @@ public class ImageController {
 
     @Autowired
     private ImageService imageService;
-    private AlbumRepository albumRepository;
 
     @Transactional
     @PostMapping("/{albumId}")
